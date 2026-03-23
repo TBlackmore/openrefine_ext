@@ -11,7 +11,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Initialize Server
     server = new OpenRefineServer();
-    client = new OpenRefineClient();
+    const port = vscode.workspace.getConfiguration('openrefine').get<number>('server.port', 3333);
+    client = new OpenRefineClient(`http://127.0.0.1:${port}`);
 
     // Register Custom Editor Provider
     context.subscriptions.push(OpenRefineEditorProvider.register(context, server, client));

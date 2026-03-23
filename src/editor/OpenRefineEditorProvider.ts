@@ -93,6 +93,7 @@ export class OpenRefineEditorProvider implements vscode.CustomEditorProvider<Ope
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
+                <meta http-equiv="Content-Security-Policy" content="default-src 'none'; frame-src http://127.0.0.1:*; style-src 'unsafe-inline';">
                 <style>
                     body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
                     iframe { width: 100%; height: 100%; border: none; }
