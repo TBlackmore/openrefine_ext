@@ -60,7 +60,7 @@ export class OpenRefineEditorProvider implements vscode.CustomEditorProvider<Ope
                 const projectId = await this.client.createProject(uri.fsPath);
                 return new OpenRefineDocument(uri, projectId);
             } catch (e) {
-                vscode.window.showErrorMessage(`Could not extract project ID from response: ${e}`);
+                vscode.window.showErrorMessage(`Failed to import file: ${e}`);
                 throw e;
             }
         });

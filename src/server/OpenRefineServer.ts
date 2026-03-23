@@ -50,7 +50,7 @@ export class OpenRefineServer {
         
         const env = { ...process.env, REFINE_HEADLESS: 'true', REFINE_PORT: this.port.toString() };
 
-        // For Windows, it might be refine.bat, for Linux/Mac it's refine
+        // For Windows, it might be refine.bat, for Linux/Mac it's create
         const isWindows = process.platform === 'win32';
         
         try {
