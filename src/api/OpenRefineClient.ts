@@ -10,13 +10,19 @@ export class OpenRefineClient {
         this.baseUrl = baseUrl;
     }
 
-    public async getCsrfToken(): Promise<string> {
+    /**
+     * Fetches a CSRF token from OpenRefine (available since OpenRefine 3.4).
+     * Returns null if the server does not support CSRF tokens (older versions).
+     */
+    public async getCsrfToken(): Promise<string | null> {
         try {
             const response = await axios.get(`${this.baseUrl}/command/core/get-csrf-token`);
-            return response.data.token;
+            return response.data.token ?? null;
         } catch (error) {
-            console.error('Failed to get CSRF token:', error);
-            throw error;
+            // The CSRF token endpoint was added in OpenRefine 3.4.
+            // Older versions return a 500 — fall back to no token.
+            console.warn('CSRF token endpoint unavailable (OpenRefine < 3.4?), proceeding without it.');
+            return null;
         }
     }
 
@@ -26,7 +32,9 @@ export class OpenRefineClient {
         
         form.append('project-name', path.basename(filePath, path.extname(filePath)));
         form.append('project-file', fs.createReadStream(filePath));
-        form.append('csrf_token', token);
+        if (token) {
+            form.append('csrf_token', token);
+        }
 
         try {
             // We need to prevent redirect to catch the project ID from the Location header
@@ -78,7 +86,9 @@ export class OpenRefineClient {
         params.append('project', projectId);
         params.append('format', format);
         params.append('engine', '{"facets":[],"mode":"row-based"}');
-        params.append('csrf_token', token);
+        if (token) {
+            params.append('csrf_token', token);
+        }
 
         try {
             const response = await axios.post(`${this.baseUrl}/command/core/export-rows/${projectId}.${format}`, params, {
